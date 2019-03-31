@@ -1,27 +1,53 @@
-<div class="row">
-  {{#each notes}}
-  <div class="col-md-3">
-    <div class="card">
-      <div class="card-body">
-        <h4 class="card-title d-flex justify-content-between align-items-center">
-          {{ title }} <a href="/notes/edit/{{_id}}"><i class="fas fa-edit"></i></a>
-        </h4>
-        <p>{{ description }}</p>
-        <!-- DELETE REQUEST -->
-        <form action="/notes/delete/{{_id}}?_method=DELETE" method="POST">
-          <input type="hidden" name="_method" value="DELETE">
-          <button type="submit" class="btn btn-danger btn-block btn-sm">Delete</button>
-        </form>
-      </div>
-    </div>
-  </div>
-  {{else}}
-  <div class="card mx-auto">
-    <div class="card-body">
-      <h1>Hello {{user.name}}</h1>
-      <p clsss="lead">There are not Notes yet.</p>
-      <a href="/notes/add" class="btn btn-success btn-block">Create One!</a>
-    </div>
-  </div>
-  {{/each}}
+<div class="bg-white">
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Nombre</th>
+        <th scope="col">Description</th>
+        <th scope="col">Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="tbody_list">
+    </tbody>
+  </table>
+
 </div>
+
+<script>
+  
+  $(document).ready(function() {
+    getList()
+  })
+
+  function getList() {
+    $.ajax({
+      url: '/notes/list',
+      type: 'GET'
+    }).then(function(res){
+      console.log(res.data)
+      res.data.map(function(item, index) {
+        $('#tbody_list').append(
+          createRow({id:item._id, number: index, title: item.title, description: item.description })
+        )
+      })
+      {{!-- Object.keys(res.data).forEach(function(i){
+        
+        
+      }) --}}
+      
+    })
+  }
+
+  function createRow(obj) {
+
+    let row = `<tr>
+      <th scope="row">${obj.number}</th>
+      <td>${obj.title}</td>
+      <td>${obj.description}</td>
+      <td id="${obj.id}">@twitter</td>
+    </tr>`
+    return row
+  }
+
+</script>
